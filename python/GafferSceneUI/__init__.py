@@ -145,6 +145,8 @@ import CopyAttributesUI
 import CollectPrimitiveVariablesUI
 import PrimitiveVariableExistsUI
 import CollectTransformsUI
+import UDIMQueryUI
+import WireframeUI
 
 # then all the PathPreviewWidgets. note that the order
 # of import controls the order of display.

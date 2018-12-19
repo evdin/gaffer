@@ -45,6 +45,7 @@ import arnold
 import imath
 
 import IECore
+import IECoreImage
 import IECoreScene
 import IECoreArnold
 
@@ -54,6 +55,7 @@ import GafferDispatch
 import GafferImage
 import GafferScene
 import GafferSceneTest
+import GafferOSL
 import GafferArnold
 import GafferArnoldTest
 
@@ -945,6 +947,53 @@ class ArnoldRenderTest( GafferSceneTest.SceneTestCase ) :
 			self.assertEqual( lightNames, [] )
 			self.assertEqual( doLinking, False )
 
+	def testNoLinkedLightsOnLights( self ) :
+
+		sphere = GafferScene.Sphere()
+
+		meshLightShader = GafferArnold.ArnoldShader()
+		meshLightShader.loadShader( "flat" )
+
+		meshLightFilter = GafferScene.PathFilter()
+		meshLightFilter["paths"].setValue( IECore.StringVectorData( [ "/sphere" ] ) )
+
+		meshLight = GafferArnold.ArnoldMeshLight()
+		meshLight["in"].setInput( sphere["out"] )
+		meshLight["filter"].setInput( meshLightFilter["out"] )
+		meshLight["parameters"]["color"].setInput( meshLightShader["out"] )
+
+		light1 = GafferArnold.ArnoldLight()
+		light1.loadShader( "point_light" )
+
+		light2 = GafferArnold.ArnoldLight()
+		light2.loadShader( "point_light" )
+
+		# Trigger light linking by unlinking a light
+		light2["defaultLight"].setValue( False )
+
+		group = GafferScene.Group()
+
+		group["in"][0].setInput( meshLight["out"] )
+		group["in"][1].setInput( light1["out"] )
+		group["in"][2].setInput( light2["out"] )
+
+		render = GafferArnold.ArnoldRender()
+		render["in"].setInput( group["out"] )
+
+		render["mode"].setValue( render.Mode.SceneDescriptionMode )
+		render["fileName"].setValue( self.temporaryDirectory() + "/test.ass" )
+		render["task"].execute()
+
+		with IECoreArnold.UniverseBlock( writable = True ) :
+
+			arnold.AiASSLoad( self.temporaryDirectory() + "/test.ass" )
+
+			sphere = arnold.AiNodeLookUpByName( "/group/sphere" )
+			self.assertIsNotNone( sphere )
+
+			self.assertEqual( arnold.AiArrayGetNumElements( arnold.AiNodeGetArray( sphere, "light_group" ) ), 0 )
+			self.assertFalse( arnold.AiNodeGetBool( sphere, "use_light_group" ) )
+
 	def testAbortRaises( self ) :
 
 		s = Gaffer.ScriptNode()
@@ -981,6 +1030,59 @@ class ArnoldRenderTest( GafferSceneTest.SceneTestCase ) :
 		s["render"]["in"].setInput( s["outputs"]["out"] )
 
 		self.assertRaisesRegexp( RuntimeError, "Render aborted", s["render"]["task"].execute )
+
+	def testOSLShaders( self ) :
+
+		swizzle = GafferOSL.OSLShader()
+		swizzle.loadShader( "MaterialX/mx_swizzle_color_float" )
+		swizzle["parameters"]["in"].setValue( imath.Color3f( 0, 0, 1 ) )
+		swizzle["parameters"]["channels"].setValue( "b" )
+
+		pack = GafferOSL.OSLShader()
+		pack.loadShader( "MaterialX/mx_pack_color" )
+		pack["parameters"]["in1"].setInput( swizzle["out"]["out"] )
+
+		ball = GafferArnold.ArnoldShaderBall()
+		ball["shader"].setInput( pack["out"] )
+
+		outputs = GafferScene.Outputs()
+		outputs.addOutput(
+			"beauty",
+			IECoreScene.Output(
+				"test",
+				"ieDisplay",
+				"rgba",
+				{
+					"driverType" : "ImageDisplayDriver",
+					"handle" : "myLovelySphere",
+				}
+			)
+		)
+		outputs["in"].setInput( ball["out"] )
+
+		render = GafferArnold.ArnoldRender()
+		render["in"].setInput( outputs["out"] )
+		render["task"].execute()
+
+		image = IECoreImage.ImageDisplayDriver.storedImage( "myLovelySphere" )
+		self.assertTrue( isinstance( image, IECoreImage.ImagePrimitive ) )
+		self.assertEqual( self.__color4fAtUV( image, imath.V2f( 0.5 ) ), imath.Color4f( 1, 0, 0, 1 ) )
+
+	def __color4fAtUV( self, image, uv ) :
+
+		objectToImage = GafferImage.ObjectToImage()
+		objectToImage["object"].setValue( image )
+
+		sampler = GafferImage.ImageSampler()
+		sampler["image"].setInput( objectToImage["out"] )
+		sampler["pixel"].setValue(
+			uv * imath.V2f(
+				image.displayWindow.size().x,
+				image.displayWindow.size().y
+			)
+		)
+
+		return sampler["color"].getValue()
 
 	def __arrayToSet( self, a ) :
 
