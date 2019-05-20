@@ -49,6 +49,82 @@ using namespace IECoreGLPreview;
 namespace
 {
 
+//Naiqi's change
+
+class MeshBoundVisualiser : public ObjectVisualiser
+{
+
+  public :
+
+    MeshBoundVisualiser()
+    {
+    }
+    ~MeshBoundVisualiser() override
+    {
+    }
+
+    IECoreGL::ConstRenderablePtr visualise( const IECore::Object *object ) const override
+    {   
+      const IECoreScene::VisibleRenderable *renderable = IECore::runTimeCast<const IECoreScene::VisibleRenderable>( object );
+
+      IECoreGL::GroupPtr group = new IECoreGL::Group();
+      group->getState()->add( new IECoreGL::Primitive::DrawWireframe( true ) );
+      group->getState()->add( new IECoreGL::Primitive::DrawSolid( false ) );
+      group->getState()->add( new IECoreGL::CurvesPrimitive::UseGLLines( true ) );
+
+      IECore::V3fVectorDataPtr pData = new IECore::V3fVectorData;
+      IECore::IntVectorDataPtr vertsPerCurveData = new IECore::IntVectorData;
+      vector<V3f> &p = pData->writable();
+      vector<int> &vertsPerCurve = vertsPerCurveData->writable();
+
+      const IECoreScene::ExternalProcedural * procObj = IECore::runTimeCast<const IECoreScene::ExternalProcedural>(object);
+      const std::vector<Box3f> listBounds = procObj->getMeshBounds();
+
+      p.clear();
+      vertsPerCurve.clear();
+      for(const Box3f b : listBounds)
+      {
+        vertsPerCurve.push_back( 5 );
+        p.push_back( b.min );
+        p.push_back( V3f( b.max.x, b.min.y, b.min.z ) );
+        p.push_back( V3f( b.max.x, b.min.y, b.max.z ) );
+        p.push_back( V3f( b.min.x, b.min.y, b.max.z ) );
+        p.push_back( b.min );
+
+        vertsPerCurve.push_back( 5 );
+        p.push_back( V3f( b.min.x, b.max.y, b.min.z ) );
+        p.push_back( V3f( b.max.x, b.max.y, b.min.z ) );
+        p.push_back( V3f( b.max.x, b.max.y, b.max.z ) );
+        p.push_back( V3f( b.min.x, b.max.y, b.max.z ) );
+        p.push_back( V3f( b.min.x, b.max.y, b.min.z ) );
+
+        vertsPerCurve.push_back( 2 );
+        p.push_back( b.min );
+        p.push_back( V3f( b.min.x, b.max.y, b.min.z ) );
+
+        vertsPerCurve.push_back( 2 );
+        p.push_back( V3f( b.max.x, b.min.y, b.min.z ) );
+        p.push_back( V3f( b.max.x, b.max.y, b.min.z ) );
+
+        vertsPerCurve.push_back( 2 );
+        p.push_back( V3f( b.max.x, b.min.y, b.max.z ) );
+        p.push_back( V3f( b.max.x, b.max.y, b.max.z ) );
+
+        vertsPerCurve.push_back( 2 );
+        p.push_back( V3f( b.min.x, b.min.y, b.max.z ) );
+        p.push_back( V3f( b.min.x, b.max.y, b.max.z ) );
+
+
+        IECoreGL::CurvesPrimitivePtr curves = new IECoreGL::CurvesPrimitive( IECore::CubicBasisf::linear(), false, vertsPerCurveData );
+        curves->addPrimitiveVariable( "P", IECoreScene::PrimitiveVariable( IECoreScene::PrimitiveVariable::Vertex, pData ) );
+        group->addChild( curves );
+      }
+
+      return group;
+    }
+};
+
+
 class BoundVisualiser : public ObjectVisualiser
 {
 
@@ -133,7 +209,7 @@ class ProceduralVisualiser : public BoundVisualiser
 };
 
 ObjectVisualiser::ObjectVisualiserDescription<ProceduralVisualiser> ProceduralVisualiser::g_visualiserDescription;
-
+/*
 class ExternalProceduralVisualiser : public BoundVisualiser
 {
 
@@ -148,5 +224,22 @@ class ExternalProceduralVisualiser : public BoundVisualiser
 };
 
 ObjectVisualiser::ObjectVisualiserDescription<ExternalProceduralVisualiser> ExternalProceduralVisualiser::g_visualiserDescription;
+*/
+
+class ExternalProceduralVisualiser : public MeshBoundVisualiser
+{
+
+  public :
+
+    typedef IECoreScene::ExternalProcedural ObjectType;
+
+  protected :
+
+    static ObjectVisualiserDescription<ExternalProceduralVisualiser> g_visualiserDescription;
+
+};
+
+ObjectVisualiser::ObjectVisualiserDescription<ExternalProceduralVisualiser> ExternalProceduralVisualiser::g_visualiserDescription;
+
 
 } // namespace
