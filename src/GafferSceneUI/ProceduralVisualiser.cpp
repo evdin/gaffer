@@ -79,9 +79,12 @@ class MeshBoundVisualiser : public ObjectVisualiser
 
       const IECoreScene::ExternalProcedural * procObj = IECore::runTimeCast<const IECoreScene::ExternalProcedural>(object);
       const std::vector<Box3f> listBounds = procObj->getMeshBounds();
+      const std::vector<std::vector<V3f>> points = procObj->getMeshPoints();
+      const std::vector<std::vector<int>> indices = procObj->getIndices();
 
       p.clear();
       vertsPerCurve.clear();
+      /*
       for(const Box3f b : listBounds)
       {
         vertsPerCurve.push_back( 5 );
@@ -119,6 +122,30 @@ class MeshBoundVisualiser : public ObjectVisualiser
         curves->addPrimitiveVariable( "P", IECoreScene::PrimitiveVariable( IECoreScene::PrimitiveVariable::Vertex, pData ) );
         group->addChild( curves );
       }
+*/
+
+      if ( points.size() != indices.size() )
+      {
+        std::cout<<"Something wrong reading the poly mesh information"<<std::endl;
+        return group;
+      }
+      auto iter = points[0].begin();
+      auto iterInd = indices[0].begin();
+      while (iterInd != indices[0].end())
+      {
+        vertsPerCurve.push_back( 5 );
+        p.push_back( points[0][*iterInd] );
+        p.push_back( points[0][*(iterInd + 1)] );
+        p.push_back( points[0][*(iterInd + 2)] );
+        p.push_back( points[0][*(iterInd + 3)] );
+        p.push_back( points[0][*iterInd] );
+
+        iterInd += 4;
+      }
+
+      IECoreGL::CurvesPrimitivePtr curves = new IECoreGL::CurvesPrimitive( IECore::CubicBasisf::linear(), false, vertsPerCurveData );
+      curves->addPrimitiveVariable( "P", IECoreScene::PrimitiveVariable( IECoreScene::PrimitiveVariable::Vertex, pData ) );
+      group->addChild( curves );
 
       return group;
     }
