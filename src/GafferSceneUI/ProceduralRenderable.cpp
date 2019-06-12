@@ -28,8 +28,8 @@ void ProceduralRenderable::render( State *currentState ) const
   else
     renderBoundingBox(group, pData, vertsPerCurveData);
 
-
-  group->render(currentState);
+  if (group->children().size() != 0)
+    group->render(currentState);
 
 }
 
@@ -84,6 +84,9 @@ void ProceduralRenderable::renderWireframe(const IECoreGL::GroupPtr group, const
 {
   const std::vector<std::vector<V3f>> points = m_extProcObject->getMeshPoints();
   const std::vector<std::vector<int>> indices = m_extProcObject->getIndices();
+  if ( points.size() == 0)
+    return;
+
   if ( points.size() != indices.size() )
   {
     std::cout<<"Something wrong reading the poly mesh information"<<std::endl;
@@ -109,7 +112,6 @@ void ProceduralRenderable::renderWireframe(const IECoreGL::GroupPtr group, const
   IECoreGL::CurvesPrimitivePtr curves = new IECoreGL::CurvesPrimitive( IECore::CubicBasisf::linear(), false, vertsPerCurveData );
   curves->addPrimitiveVariable( "P", IECoreScene::PrimitiveVariable( IECoreScene::PrimitiveVariable::Vertex, pData ) );
   group->addChild( curves );
-
 }
 
 Imath::Box3f ProceduralRenderable::bound()  const

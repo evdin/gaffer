@@ -116,5 +116,6 @@ IECore::ConstObjectPtr ExternalProcedural::computeSource( const Context *context
 {
 	IECoreScene::ExternalProceduralPtr result = new IECoreScene::ExternalProcedural( fileNamePlug()->getValue(), boundPlug()->getValue() );
 	parametersPlug()->fillCompoundData( result->parameters()->writable() );
+  result->readMeshPoints();
 	return result;
 }
