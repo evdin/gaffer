@@ -82,8 +82,9 @@ void ProceduralRenderable::renderBoundingBox(const IECoreGL::GroupPtr group, con
 
 void ProceduralRenderable::renderWireframe(const IECoreGL::GroupPtr group, const IECore::V3fVectorDataPtr pData, const IECore::IntVectorDataPtr vertsPerCurveData) const
 {
-  const std::vector<std::vector<V3f>> points = m_extProcObject->getMeshPoints();
-  const std::vector<std::vector<int>> indices = m_extProcObject->getIndices();
+  const std::vector<std::vector<V3f>> & points = m_extProcObject->getMeshPoints();
+  const std::vector<std::vector<int>> & indices = m_extProcObject->getIndices();
+  const std::vector<std::vector<int>> & vertCounts = m_extProcObject->getVertCount();
   if ( points.size() == 0)
     return;
 
@@ -97,16 +98,37 @@ void ProceduralRenderable::renderWireframe(const IECoreGL::GroupPtr group, const
   p.clear();
   vertsPerCurve.clear();
 
-  auto iterInd = indices[0].begin();
-  while (iterInd != indices[0].end())
+  auto vertCountsIter = vertCounts.begin();
+  while( vertCountsIter != vertCounts.end())
   {
-    vertsPerCurve.push_back( 5 );
-    p.push_back( points[0][*iterInd] );
-    p.push_back( points[0][*(iterInd + 1)] );
-    p.push_back( points[0][*(iterInd + 2)] );
-    p.push_back( points[0][*(iterInd + 3)] );
-    p.push_back( points[0][*iterInd] );
-    iterInd += 4;
+    auto meshIndex  = vertCountsIter - vertCounts.begin();
+    auto iterInd = indices[meshIndex].begin();
+    auto vertCountsIndIter = vertCounts[meshIndex].begin();
+    while( vertCountsIndIter != vertCounts[meshIndex].end() )
+    {
+      if( *vertCountsIndIter == 3)
+      {
+        vertsPerCurve.push_back( 4 );
+        p.push_back( points[meshIndex][*iterInd] );
+        p.push_back( points[meshIndex][*(iterInd + 1)] );
+        p.push_back( points[meshIndex][*(iterInd + 2)] );
+        p.push_back( points[meshIndex][*iterInd] );
+        iterInd += 3;
+
+      }else
+      {
+        vertsPerCurve.push_back( 5 );
+        p.push_back( points[meshIndex][*iterInd] );
+        p.push_back( points[meshIndex][*(iterInd + 1)] );
+        p.push_back( points[meshIndex][*(iterInd + 2)] );
+        p.push_back( points[meshIndex][*(iterInd + 3)] );
+        p.push_back( points[meshIndex][*iterInd] );
+        iterInd += 4;
+      }
+      vertCountsIndIter++;
+    }
+
+    vertCountsIter++;
   }
 
   IECoreGL::CurvesPrimitivePtr curves = new IECoreGL::CurvesPrimitive( IECore::CubicBasisf::linear(), false, vertsPerCurveData );
