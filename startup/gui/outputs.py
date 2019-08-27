@@ -169,6 +169,16 @@ with IECore.IgnoredExceptions( ImportError ) :
 			)
 		)
 
+# Add output set in python level
+# The set is a dict with set_name:contained_aovs pairs
+
+GafferScene.Outputs.outputSets = { 
+	'Interactive/Arnold/' : {},
+	'Batch/Arnold/' : {},
+}
+
+GafferScene.Outputs.outputSets['Interactive/Arnold/']['default'] = ['direct', 'indirect']
+
 # Add standard AOVs as they are defined in the 3Delight shaders
 
 with IECore.IgnoredExceptions( ImportError ) :
