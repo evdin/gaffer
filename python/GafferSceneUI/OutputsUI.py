@@ -149,6 +149,12 @@ class OutputsPlugValueWidget( GafferUI.PlugValueWidget ) :
 
 		pass
 
+	def addOutpus( self, prefix, aovs ) :
+
+		node = self.getPlug().node()
+		for aov in aovs:
+			node.addOutput( prefix + aov.title() )
+
 	def __addMenuDefinition( self ) :
 
 		node = self.getPlug().node()
@@ -168,6 +174,23 @@ class OutputsPlugValueWidget( GafferUI.PlugValueWidget ) :
 					"active" : name not in currentNames
 				}
 			)
+
+		outputSets = getattr(node, 'outputSets', None)
+		if outputSets:
+			for category, detailedSets in outputSets.iteritems() :
+				categoryPath = category
+				if not category.startswith( "/" ) :
+					categoryPath = "/" + category
+				m.append(categoryPath, { "divider" : True } )
+				for setName, aovs in detailedSets.iteritems() :
+					menuPath = categoryPath + setName
+					m.append(
+						menuPath,
+						{
+							"command" : functools.partial( self.addOutpus, category, aovs ),
+							"active" : name not in currentNames
+						}
+					)
 
 		if len( registeredOutputs ) :
 			m.append( "/BlankDivider", { "divider" : True } )
