@@ -36,6 +36,8 @@
 
 import functools
 import imath
+import os
+import subprocess
 
 import IECore
 
@@ -255,7 +257,7 @@ class _ImageListing( GafferUI.PlugValueWidget ) :
 				self.__extractButton.clickedSignal().connect( Gaffer.WeakMethod( self.__extractClicked ), scoped = False )
 
 				self.__openDirectoryButton = GafferUI.Button( image = "extract.png", hasFrame = False, toolTip = "Open directory of selected image" )
-				self.__openDirectoryButton.setEnabled( True )
+				self.__openDirectoryButton.setEnabled( False )
 				self.__openDirectoryButton.clickedSignal().connect( Gaffer.WeakMethod( self.__openDirectoryClicked ), scoped = False )
 
 				GafferUI.Spacer( imath.V2i( 0 ), parenting = { "expand" : True } )
@@ -461,9 +463,8 @@ class _ImageListing( GafferUI.PlugValueWidget ) :
 	def __openDirectoryClicked( self, *unused ) :
 
 		index = self.__indicesFromSelection()[0]  # disabled unless exactly one image is selected
-		# path = self.__images()[index]
-		for item in dir(self.__images()[index]):
-			print item
+		directory_path = os.path.dirname(self.__images()[index].getChild('fileName').getValue())
+		subprocess.Popen( [ "xdg-open", directory_path ] )
 
 	def __dropImage( self, eventData ) :
 
