@@ -254,6 +254,10 @@ class _ImageListing( GafferUI.PlugValueWidget ) :
 				self.__extractButton.setEnabled( False )
 				self.__extractButton.clickedSignal().connect( Gaffer.WeakMethod( self.__extractClicked ), scoped = False )
 
+				self.__openDirectoryButton = GafferUI.Button( image = "extract.png", hasFrame = False, toolTip = "Open directory of selected image" )
+				self.__openDirectoryButton.setEnabled( True )
+				self.__openDirectoryButton.clickedSignal().connect( Gaffer.WeakMethod( self.__openDirectoryClicked ), scoped = False )
+
 				GafferUI.Spacer( imath.V2i( 0 ), parenting = { "expand" : True } )
 
 				self.__removeButton = GafferUI.Button( image = "delete.png", hasFrame = False, toolTip = "Remove selected image" )
@@ -331,6 +335,7 @@ class _ImageListing( GafferUI.PlugValueWidget ) :
 		self.__extractButton.setEnabled( bool( indices ) )
 		self.__exportButton.setEnabled( len( indices ) == 1 )
 		self.__duplicateButton.setEnabled( bool( indices ) )
+		self.__openDirectoryButton.setEnabled( len( indices ) == 1 )
 
 		if not indices :
 			# No selection. This happens when the user renames
@@ -452,6 +457,13 @@ class _ImageListing( GafferUI.PlugValueWidget ) :
 				imageCopy.copyFrom( image )
 
 			self.getPlug().setValue( len( self.__images() ) - 1 )
+
+	def __openDirectoryClicked( self, *unused ) :
+
+		index = self.__indicesFromSelection()[0]  # disabled unless exactly one image is selected
+		# path = self.__images()[index]
+		for item in dir(self.__images()[index]):
+			print item
 
 	def __dropImage( self, eventData ) :
 
