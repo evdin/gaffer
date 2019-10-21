@@ -139,6 +139,9 @@ void ProceduralRenderable::renderWireframe(const IECoreGL::GroupPtr group, const
 Imath::Box3f ProceduralRenderable::bound()  const
 {
   const std::vector<Box3f> listBounds = m_extProcObject->getMeshBounds();
+  if (listBounds.size() < 1)
+      return Imath::Box3f();
+
   if(listBounds.size() == 1)
     return listBounds[0];
 
