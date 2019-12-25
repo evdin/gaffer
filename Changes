@@ -1,3 +1,115 @@
+0.54.2.3 (relative to 0.54.2.2)
+========
+
+Fixes
+-----
+
+- CollectScenes : Fixed bug in set computations. This first appeared as a failure to display lights in the viewer in certain circumstances (#3497).
+- Viewer : Fixed X-Ray shading mode on MacOS (#3473).
+- Caching : Changed the cache used in various sub-systems to avoid potential compute failures (#3476).
+- LRUCache : Fixed handling of cases where value computation for a cache-miss was cancelled in-flight, which then prevented the value ever being successfully retrieved (#3469).
+- ShaderTweaks : Fixed missing preset for Arnold Blockers.
+- Arnold : Fixed crash when disconnecting shader networks from lights (#3484).
+- VectorDataWidget : Fixed styling update bug for non-editable widgets.
+- ParallelAlgo : Fixed potential hang in `popUIThreadCallHandler()` Python bindings.
+
+0.54.2.2 (relative to 0.54.2.1)
+========
+
+Fixes
+-----
+
+- ArnoldLightFilter : Fixed bug which caused animated light blockers to lose their transform.
+- NodeEditor : Fixed bug that allowed drag and drop to create unwanted input connections to output plugs.
+- GraphComponent : Fixed bug that allowed construction with an invalid name (#3436).
+- Layouts : Keyboard shortcuts will now work in detached panels restored with a layout.
+- ArnoldLight : Fixed a bug that prevented OSL shaders being used with Arnold lights.
+- GraphEditor : Fixed several bugs and a crash that could occur when a parent of the editor's root node was changed or deleted.
+- ImageReader : Fixed bug which meant that changes to the default format were not respected.
+- UVInspector : Fixed bug which prevented alternative UV sets from being viewed.
+- SceneInspector : Fixed bug comparing objects where a particular primitive variable existed on only one of the objects (#3432).
+
+0.54.2.1 (relative to 0.54.2.0)
+========
+
+Fixes
+-----
+
+- UIEditor : Fixed bugs which prevented node colour from being edited (#3383, #3384, #3385).
+- Encapsulate : Fixed concurrent access to signals that could cause crashes at render time
+  (#3381).
+- Layouts : Fixed bug in `editor()` method (#3395).
+- TBB : Fixed an obscure context management bug involving older TBB versions in custom Gaffer builds (#3409).
+- NodeSetEditor : Fixed circular references for linked editors (#3421).
+- Added support for loading files saved in Gaffer 0.55 (#3415). Note that because version 0.54
+  does not support multiple child inputs on the Parent node, only the first child input will
+  be loaded.
+
+0.54.2.0 (relative to 0.54.1.0)
+========
+
+Features
+--------
+
+- Shaders : Added support for attribute substitutions in all string shader parameters.
+  Tokens of the form `<attr:attributeName>` will be automatically substituted with the
+  value of `attributeName` at render time. We recommend using this mechanism for passing
+  texture paths to shaders, while allowing the paths to be modified independently of the
+  shaders themselves (via a CustomAttribute node) (#3331).
+
+  > Note : This mechanism uses the same syntax as Arnold's native attribute substitutions,
+  > meaning that substitutions now occur in Gaffer before reaching Arnold.
+
+Improvements
+------------
+
+- ShaderTweaks : Added `ignoreMissing` plug that suppresses the error that would normally
+  occur for an attempt to tweak a parameter that doesn't exist (#3353).
+- ImageTransform : Added `invert` plug (#3371).
+- Layouts (#3323) :
+  - Added pinning menu option for following numeric bookmarks.
+  - Improved legibility of pinning menu.
+- Viewer : Added X-Ray shading mode to the scene Viewer (#3344).
+
+Fixes
+-----
+
+- ArnoldLightFilter : Fixed bug whereby changing a `light_blocker` parameter during an interactive
+  render caused the transform for the blocker to be reset (#3358).
+- ArnoldShader : Fixed bug which could cause user defaults for shader parameters to be ignored (#3333).
+- Orientation : Fixed UI for "Quaternion XYZW (Houdini)" mode. Previously the `quaternion` plug was
+  disabled in this mode (#3352).
+- StandardAttributes : Fixed popup menu for the `linkedLights` and `filteredLights` plugs (#3346).
+- Layouts : Improved handling of errors when loading a layout which contains a missing editor (#3355).
+- ScriptWindow : Fixed automatic creation of ScriptWindows so that it interacts correctly with custom
+  code that calls `ScriptWindow.acquire()` on script creation (#3362).
+- GafferCortex : Fixed bug which caused plug connections and values to be lost when reloading a Parameter.
+  Also added support for StringParameter userData that specifies StringPlug substitutions (#3370).
+- OSLExpression : Fixed bug that caused execution to request `context.getTime()` even if the expression
+  didn't need it. This could cause errors when dispatching tasks (#3373).
+- Layouts : Fixed menu bar shortcuts in detached panels (#3357, #3359, #3372).
+- Arnold metadata : Disabled `camera_projection.camera` parameter (#3363).
+- Scene Path Browser : Fixed a bug when browsing a scene for a promoted plug (#3377).
+
+API
+---
+
+- NumericBookmarkSet : Added new set subclass that mirrors numeric bookmarks (#3323).
+- TweakPlug : Added `MissingMode` enum arguments to `applyTweaks()` methods (#3353).
+- ScriptWindow : Added `menuBar()` accessor (#3359).
+- MenuBar : Added `addShortcutTarget()` method to allow keyboard shortcuts to be associated
+  with windows other than the parent window of the menu bar (#3359).
+- CompoundEditor : Added `editor()` method that can be used to find an editor that the
+  user is currently interacting with (#3372).
+- OpenGLShader : Added support for glsl source code parameters (#3344).
+- ScenePath Binding : Prevent crashes caused by passing None to constructor (#3377).
+
+Build
+-----
+
+- Fixed bug with builds using LOCATE_DEPENDENCY_RESOURCESPATH (#3347).
+- Fixed failure to load GafferArnold during documentation builds on MacOS with SIP enabled (#3348).
+
 0.54.1.0 (relative to 0.54.0.1)
 ========
 

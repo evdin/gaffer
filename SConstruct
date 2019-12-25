@@ -52,8 +52,8 @@ import subprocess
 
 gafferMilestoneVersion = 0 # for announcing major milestones - may contain all of the below
 gafferMajorVersion = 54 # backwards-incompatible changes
-gafferMinorVersion = 1 # new backwards-compatible features
-gafferPatchVersion = 0 # bug fixes
+gafferMinorVersion = 2 # new backwards-compatible features
+gafferPatchVersion = 3 # bug fixes
 
 # All of the following must be considered when determining
 # whether or not a change is backwards-compatible
@@ -544,6 +544,12 @@ else :
 	commandEnv["ENV"]["LD_LIBRARY_PATH"] = commandEnv.subst( ":".join( [ "$BUILD_DIR/lib" ] + split( commandEnv["LOCATE_DEPENDENCY_LIBPATH"] ) ) )
 
 commandEnv["ENV"]["PYTHONPATH"] = commandEnv.subst( ":".join( split( commandEnv["LOCATE_DEPENDENCY_PYTHONPATH"] ) ) )
+
+# SIP on MacOS prevents DYLD_LIBRARY_PATH being passed down so we make sure
+# we also pass through to gaffer the other base vars it uses to populate paths
+# for third-party support.
+for v in ( 'ARNOLD_ROOT', 'DELIGHT_ROOT' ) :
+	commandEnv["ENV"][ v ] = commandEnv[ v ]
 
 def runCommand( command ) :
 
@@ -1214,7 +1220,14 @@ else :
 
 resources = None
 if commandEnv.subst( "$LOCATE_DEPENDENCY_RESOURCESPATH" ) :
-	resources = commandEnv.Install( "$BUILD_DIR", "$LOCATE_DEPENDENCY_RESOURCESPATH" )
+
+	resources = []
+	resourceRoot = commandEnv.subst( "$LOCATE_DEPENDENCY_RESOURCESPATH" )
+	for root, dirs, files in os.walk( resourceRoot ) :
+		for f in files :
+			fullPath = os.path.join( root, f )
+			resources.append( commandEnv.Command( fullPath.replace( resourceRoot, "$BUILD_DIR/resources/", 1 ), fullPath, Copy( "$TARGET", "$SOURCE" ) ) )
+
 	commandEnv.NoCache( resources )
 	commandEnv.Alias( "build", resources )
 
