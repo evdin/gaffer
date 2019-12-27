@@ -172,6 +172,7 @@ set( GAFFER_LIB_NAMES
   GafferImage
   GafferImageUI
   GafferOSL
+  GafferOSLUI
   GafferDelight
   GafferScene
   GafferSceneUI
@@ -394,6 +395,14 @@ target_link_libraries( GafferOSL ${BASE_LIBS} Gaffer GafferScene GafferImage ${O
 add_library( _GafferOSL MODULE ${GAFFEROSL_CXX_MODULE_FILES} )
 target_link_libraries( _GafferOSL ${BASE_LIBS} ${BASE_PYTHON_LIBS} GafferBindings GafferScene GafferImage GafferOSL GafferAppleseed ${Ilmbase_IEX_LIBRARY} )
 
+# GafferOSLUI   #Naiqi's change
+add_library( GafferOSLUI SHARED ${GAFFEROSLUI_CXX_FILES} ${GAFFEROSLUI_H_FILES} )
+target_link_libraries( GafferOSLUI ${BASE_LIBS} Gaffer GafferOSL GafferSceneUI ${OPENIMAGEIO_LIBRARIES} ${OSL_QUERY_LIBRARY} ${OSL_EXEC_LIBRARY} ${ILMBASE_IEX_LIBRARY} ${Cortex_IECORE_LIBRARY} )
+
+# GafferOSL Python Module #Naiqi's change
+add_library( _GafferOSLUI MODULE ${GAFFEROSLUI_CXX_MODULE_FILES} )
+target_link_libraries( _GafferOSLUI GafferOSLUI ${BASE_LIBS} ${BASE_PYTHON_LIBS} GafferBindings )
+
 # GafferVDB
 add_library( GafferVDB SHARED ${GAFFERVDB_CXX_FILES} ${GAFFERVDB_H_FILES} )
 target_link_libraries( GafferVDB ${BASE_LIBS} Gaffer GafferScene ${OpenVDB_LIBRARIES} ${Cortex_IECORESCENE_LIBRARY} )
@@ -514,6 +523,7 @@ if( WIN32 )
   set_target_properties( _GafferImage PROPERTIES SUFFIX ".pyd" )
   set_target_properties( _GafferImageUI PROPERTIES SUFFIX ".pyd" )
   set_target_properties( _GafferOSL PROPERTIES SUFFIX ".pyd" )
+  set_target_properties( _GafferOSLUI PROPERTIES SUFFIX ".pyd" )  #Naiqi's change
   set_target_properties( _GafferDelight PROPERTIES SUFFIX ".pyd" )
   set_target_properties( _GafferScene PROPERTIES SUFFIX ".pyd" )
   set_target_properties( _GafferSceneUI PROPERTIES SUFFIX ".pyd" )
@@ -534,6 +544,7 @@ add_dependencies( GafferDispatch Gaffer )
 add_dependencies( GafferImage Gaffer GafferDispatch )
 add_dependencies( GafferImageUI Gaffer GafferImage GafferUI GafferBindings GafferImage GafferDispatch GafferImageUI )
 add_dependencies( GafferOSL Gaffer GafferScene GafferImage )
+add_dependencies( GafferOSLUI Gaffer GafferUI GafferOSL)
 add_dependencies( GafferDelight Gaffer GafferDispatch GafferScene )
 add_dependencies( GafferScene Gaffer GafferImage GafferDispatch )
 add_dependencies( GafferSceneUI Gaffer GafferUI GafferImage GafferImageUI GafferScene )
@@ -556,6 +567,7 @@ add_dependencies( _GafferScene Gaffer GafferScene GafferBindings )
 add_dependencies( _GafferSceneUI Gaffer GafferSceneUI GafferImageUI GafferBindings )
 add_dependencies( _GafferUI Gaffer GafferUI GafferBindings )
 add_dependencies( _GafferOSL GafferBindings GafferScene GafferImage GafferOSL )
+add_dependencies( _GafferOSLUI Gaffer GafferOSLUI GafferBindings)
 add_dependencies( _GafferAppleseed GafferDispatch GafferScene GafferBindings GafferAppleseed )
 add_dependencies( _GafferArnold Gaffer GafferScene GafferBindings GafferDispatch GafferArnold )
 add_dependencies( _GafferArnoldUI Gaffer GafferArnoldUI )
@@ -588,7 +600,9 @@ endforeach()
 foreach( GAFFER_LIB ${GAFFER_LIB_NAMES} )
   string( TOUPPER ${GAFFER_LIB} _GAFFER_LIB )
   install( TARGETS _${GAFFER_LIB}
-           DESTINATION python/${GAFFER_LIB} )
+           DESTINATION python/${GAFFER_LIB}/ )
+  message("This seems not working")
+  message( "_${GAFFER_LIB}")
 endforeach()
 
 # Install Bindings
