@@ -112,6 +112,31 @@ with IECore.IgnoredExceptions( ImportError ) :
 		"volume_indirect",
 		"volume_albedo",
 		"light_groups",
+		"AA_inv_density",
+		"ID",
+		"N",
+		"P",
+		"Pref",
+		"RGBA",
+		"Z",
+		"motionvector",
+		"opacity",
+		"raycount",
+		"shadow_matte",
+		"sheen",
+		"sheen_albedo",
+		"sheen_direct",
+		"sheen_indirect",
+		"volume_Z",
+		"volume_opacity",
+		"shadow",
+		"shadow_diff",
+		"shadow_mask",
+		"highlight",
+		"rim_light",
+		"crypto_asset",
+		"crypto_material",
+		"crypto_object",
 	] :
 
 		label = aov.replace( "_", " " ).title().replace( " ", "_" )
@@ -143,6 +168,16 @@ with IECore.IgnoredExceptions( ImportError ) :
 				"color " + data,
 			)
 		)
+
+# Add output set in python level
+# The set is a dict with set_name:contained_aovs pairs
+
+GafferScene.Outputs.outputSets = { 
+	'Interactive/Arnold/' : {},
+	'Batch/Arnold/' : {},
+}
+
+GafferScene.Outputs.outputSets['Interactive/Arnold/']['default'] = ['direct', 'indirect']
 
 # Add standard AOVs as they are defined in the 3Delight shaders
 

@@ -172,7 +172,7 @@ set( GAFFER_LIB_NAMES
   GafferImage
   GafferImageUI
   GafferOSL
-  GafferOSLUI
+  GafferOSLUI    #Naiqi's change
   GafferDelight
   GafferScene
   GafferSceneUI
@@ -357,7 +357,7 @@ file( GLOB IECORESCENE_PREVIEW_H_FILES ${GAFFER_SOURCE_DIR}/include/GafferScene/
 file( GLOB IECORESCENE_PREVIEW_CPP_FILES ${GAFFER_SOURCE_DIR}/src/GafferScene/IECoreScenePreview/*.cpp )
 file( GLOB IECOREGL_PREVIEW_CPP_FILES ${GAFFER_SOURCE_DIR}/src/GafferScene/IECoreGLPreview/*.cpp )
 add_library( GafferScene SHARED ${GAFFERSCENE_CXX_FILES} ${GAFFERSCENE_H_FILES} ${IECORESCENE_PREVIEW_H_FILES} ${IECORESCENE_PREVIEW_CPP_FILES} ${IECOREGL_PREVIEW_CPP_FILES} )
-target_link_libraries( GafferScene ${BASE_LIBS} Gaffer ${ILMBASE_IEX_LIBRARY} ${Cortex_IECOREGL_LIBRARY} ${Cortex_IECOREALEMBIC_LIBRARY} GafferImage GafferDispatch ${Cortex_IECORESCENE_LIBRARY} ${Cortex_IECOREGL_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} )
+target_link_libraries( GafferScene ${BASE_LIBS} Gaffer ${ILMBASE_IEX_LIBRARY} ${Cortex_IECOREGL_LIBRARY} ${Cortex_IECOREALEMBIC_LIBRARY} GafferImage GafferDispatch ${Cortex_IECORESCENE_LIBRARY} ${Cortex_IECOREGL_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY}  ${CORTEX_ARNOLD_LIBS} ${Cortex_IECOREARNOLD_LIBRARY} ) #Naiqi's change
 
 # GafferScene Python Module
 add_library( _GafferScene MODULE ${GAFFERSCENE_CXX_MODULE_FILES} ${GAFFERSCENE_H_MODULE_FILES} )
@@ -601,8 +601,6 @@ foreach( GAFFER_LIB ${GAFFER_LIB_NAMES} )
   string( TOUPPER ${GAFFER_LIB} _GAFFER_LIB )
   install( TARGETS _${GAFFER_LIB}
            DESTINATION python/${GAFFER_LIB}/ )
-  message("This seems not working")
-  message( "_${GAFFER_LIB}")
 endforeach()
 
 # Install Bindings

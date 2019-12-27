@@ -36,18 +36,43 @@
 
 #include "GafferScene/Private/IECoreGLPreview/ObjectVisualiser.h"
 #include "GafferScene/Private/IECoreScenePreview/Procedural.h"
+#include "GafferSceneUI/ProceduralRenderable.h"
 
 #include "IECoreGL/CurvesPrimitive.h"
 #include "IECoreGL/Group.h"
 
 #include "IECoreScene/ExternalProcedural.h"
 
+
 using namespace std;
 using namespace Imath;
 using namespace IECoreGLPreview;
+using namespace GafferSceneUI;
 
 namespace
 {
+
+IE_CORE_FORWARDDECLARE(ProceduralRenderable);
+
+
+class VariantVisualiser : public ObjectVisualiser
+{
+
+  public :
+
+    VariantVisualiser()
+    {
+    }
+    ~VariantVisualiser() override
+    {
+    }
+
+    IECoreGL::ConstRenderablePtr visualise( const IECore::Object *object ) const override
+    {
+      return new GafferSceneUI::ProceduralRenderable(object);
+    }
+};
+
 
 class BoundVisualiser : public ObjectVisualiser
 {
@@ -133,7 +158,7 @@ class ProceduralVisualiser : public BoundVisualiser
 };
 
 ObjectVisualiser::ObjectVisualiserDescription<ProceduralVisualiser> ProceduralVisualiser::g_visualiserDescription;
-
+/*
 class ExternalProceduralVisualiser : public BoundVisualiser
 {
 
@@ -148,5 +173,22 @@ class ExternalProceduralVisualiser : public BoundVisualiser
 };
 
 ObjectVisualiser::ObjectVisualiserDescription<ExternalProceduralVisualiser> ExternalProceduralVisualiser::g_visualiserDescription;
+*/
+
+class ExternalProceduralVisualiser : public VariantVisualiser
+{
+
+  public :
+
+    typedef IECoreScene::ExternalProcedural ObjectType;
+
+  protected :
+
+    static ObjectVisualiserDescription<ExternalProceduralVisualiser> g_visualiserDescription;
+
+};
+
+ObjectVisualiser::ObjectVisualiserDescription<ExternalProceduralVisualiser> ExternalProceduralVisualiser::g_visualiserDescription;
+
 
 } // namespace
