@@ -74,16 +74,20 @@ class CameraVisualiser : public ObjectVisualiser
 			vector<V3f> &p = pData->writable();
 			vector<int> &vertsPerCurve = vertsPerCurveData->writable();
 
-			Box2f near( screenWindow );
-			Box2f far( screenWindow );
-
-			if( projection == "perspective" )
-			{
-				near.min *= clippingPlanes[0];
-				near.max *= clippingPlanes[0];
-				far.min *= clippingPlanes[1];
-				far.max *= clippingPlanes[1];
-			}
+            Box2f near, far;
+            if( projection == "perspective" )
+            {
+                near.min = screenWindow.min * clippingPlanes[0];
+                near.max = screenWindow.max * clippingPlanes[0];
+                far.min = screenWindow.min * clippingPlanes[1];
+                far.max = screenWindow.max * clippingPlanes[1];
+            }
+            else
+            {
+                near.min = V2f(-1, -1);
+                near.max = V2f(1, 1);
+                far = near;
+            }
 
 			const V2f o( offset );
 			near.min -= o;
