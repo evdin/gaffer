@@ -129,18 +129,22 @@ class CameraVisualiser : public ObjectVisualiser
 			/// \todo When we're drawing the camera by some means other than creating a primitive for it,
 			/// use the actual clippings planes. Right now that's not a good idea as it results in /huge/
 			/// framing bounds when the viewer frames a selected camera.
-			V2f clippingPlanes( 0, 5 );
+            V2f clippingPlanes( 0, 5 );
 
-			Box2f near( screenWindow );
-			Box2f far( screenWindow );
-
-			if( projection == "perspective" )
-			{
-				near.min *= clippingPlanes[0];
-				near.max *= clippingPlanes[0];
-				far.min *= clippingPlanes[1];
-				far.max *= clippingPlanes[1];
-			}
+            Box2f near, far;
+            if( projection == "perspective" )
+            {
+                near.min = screenWindow.min * clippingPlanes[0];
+                near.max = screenWindow.max * clippingPlanes[0];
+                far.min = screenWindow.min * clippingPlanes[1];
+                far.max = screenWindow.max * clippingPlanes[1];
+            }
+            else
+            {
+                near.min = V2f(-1, -1);
+                near.max = V2f(1, 1);
+                far = near;
+            }
 
 			vertsPerCurve.push_back( 5 );
 			p.push_back( V3f( near.min.x, near.min.y, -clippingPlanes[0] ) );
