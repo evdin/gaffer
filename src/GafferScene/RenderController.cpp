@@ -647,8 +647,18 @@ class RenderController::SceneGraph
 				}
 			}
 			else
-			{
-				m_objectInterface = renderer->object( name, object.get(), attributesInterface( renderer ) );
+            {
+                if(object->typeId() == IECoreScene::Camera::staticTypeId())
+                {
+                       if( const IECoreScene::Camera *camera = runTimeCast<const IECoreScene::Camera>( object.get() ) )
+                       {
+                           IECoreScene::CameraPtr cameraCopy = camera->copy();
+                           RendererAlgo::applyCameraGlobals( cameraCopy.get(), globals, scene );
+                           m_objectInterface = renderer->camera( name, cameraCopy.get(), attributesInterface( renderer ) );
+                       }
+                   }
+                  else
+                      m_objectInterface = renderer->object( name, object.get(), attributesInterface( renderer ) );
 			}
 
 			return true;
