@@ -274,6 +274,10 @@ foreach(srcSvgFile ${GAFFER_SVG_FILES})
     string(FIND ${svg} "forExport:" a)
     if("${a}" STREQUAL "0")
       list(APPEND svgExport ${svg})
+      #lyk
+    message("svg in forExport:>>>>")
+    message("${svg}")
+    #/lyk 
     endif()
   endforeach()
 

@@ -555,7 +555,7 @@
        inkscape:label="Layer"
        style="display:inline" />
     <g
-       id="mousePointerLeftClick">
+       id="forExport:mousePointerLeftClick">
       <rect
          style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#7f7f7f;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
          id="rect7106"
@@ -635,7 +635,7 @@
       </g>
     </g>
     <g
-       id="mousePointerRightClick">
+       id="forExport:mousePointerRightClick">
       <g
          id="g1452">
         <path
@@ -717,7 +717,7 @@
       </g>
     </g>
     <g
-       id="mousePointerMiddleClick">
+       id="forExport:mousePointerMiddleClick">
       <rect
          y="1020.3622"
          x="128"
@@ -793,7 +793,7 @@
       </g>
     </g>
     <g
-       id="mousePointerWheelUpDown">
+       id="forExport:mousePointerWheelUpDown">
       <rect
          style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#7f7f7f;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
          id="rect7114"
@@ -882,7 +882,7 @@
          sodipodi:nodetypes="cccc" />
     </g>
     <g
-       id="mouse">
+       id="forExport:mouse">
       <rect
          y="994.36218"
          x="5"
@@ -944,7 +944,7 @@
       </g>
     </g>
     <g
-       id="mouseWheelUpDown">
+       id="forExport:mouseWheelUpDown">
       <rect
          style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#7f7f7f;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
          id="rect7100"
@@ -1017,7 +1017,7 @@
          style="fill:#f7931e;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
-       id="mousePointerLeftRightClick">
+       id="forExport:mousePointerLeftRightClick">
       <rect
          style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#7f7f7f;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
          id="rect7110"
@@ -1105,7 +1105,7 @@
       </g>
     </g>
     <g
-       id="mousePointer">
+       id="forExport:mousePointer">
       <g
          id="g1717">
         <rect
@@ -1184,7 +1184,7 @@
       </g>
     </g>
     <g
-       id="mouseLeftClick">
+       id="forExport:mouseLeftClick">
       <g
          id="g1305">
         <path
@@ -1250,7 +1250,7 @@
          y="994.36218" />
     </g>
     <g
-       id="mouseRightClick">
+       id="forExport:mouseRightClick">
       <g
          id="g1325">
         <path
@@ -1316,7 +1316,7 @@
          style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#7f7f7f;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
     </g>
     <g
-       id="mouseLeftRightClick">
+       id="forExport:mouseLeftRightClick">
       <g
          id="g1346">
         <path
@@ -1388,7 +1388,7 @@
          y="994.36218" />
     </g>
     <g
-       id="mouseMiddleClick">
+       id="forExport:mouseMiddleClick">
       <g
          id="g1365">
         <path
