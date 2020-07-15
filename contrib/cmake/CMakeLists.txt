@@ -262,20 +262,21 @@ file( GLOB GAFFER_SVG_FILES ${GAFFER_SOURCE_DIR}/resources/*.svg)
 set(outputPNGs "")
 
 foreach(srcSvgFile ${GAFFER_SVG_FILES})
+	message(${srcSvgFile})
   # generate an object list from the svg file
   execute_process( COMMAND inkscape --query-all ${srcSvgFile} OUTPUT_VARIABLE svgContents)
-
+	
   STRING(REGEX REPLACE ";" "\\\\;" svgContents "${svgContents}")
   STRING(REGEX REPLACE "\n" ";" svgContents "${svgContents}")
 
   set(svgExport "")
-
   foreach(svg ${svgContents})
     string(FIND ${svg} "forExport:" a)
     if("${a}" STREQUAL "0")
       list(APPEND svgExport ${svg})
     endif()
   endforeach()
+
 
   foreach(svg ${svgExport})
     string(SUBSTRING ${svg} 10 4096 svg)

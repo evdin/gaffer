@@ -14,3 +14,4 @@ cmake-build-*
 config.log
 doc/html
 doc/python
+.build/
