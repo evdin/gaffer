@@ -257,29 +257,44 @@ add_custom_command(
 # Build Graphics
 # ==============
 
-
 file( GLOB GAFFER_SVG_FILES ${GAFFER_SOURCE_DIR}/resources/*.svg)
 set(outputPNGs "")
 
 foreach(srcSvgFile ${GAFFER_SVG_FILES})
-	message(${srcSvgFile})
+
   # generate an object list from the svg file
   execute_process( COMMAND inkscape --query-all ${srcSvgFile} OUTPUT_VARIABLE svgContents)
 	
   STRING(REGEX REPLACE ";" "\\\\;" svgContents "${svgContents}")
   STRING(REGEX REPLACE "\n" ";" svgContents "${svgContents}")
 
+
+
+
+STRING(REGEX REPLACE "svg" "py" pyname "${srcSvgFile}")
+
+file( READ  ${pyname} py_ids)
+
+STRING(REGEX REPLACE "'" "\"" py_ids "${py_ids}")
+
+STRING(REGEX MATCHALL "\"([a-zA-Z0-9]*)\"" py_ids ${py_ids})
+STRING(REGEX REPLACE "\"" "" py_ids "${py_ids}")
+
+
   set(svgExport "")
   foreach(svg ${svgContents})
-    string(FIND ${svg} "forExport:" a)
+	foreach(id ${py_ids})
+    string(FIND ${svg} ${id} a)
     if("${a}" STREQUAL "0")
       list(APPEND svgExport ${svg})
+	 break()
     endif()
+	endforeach()
   endforeach()
 
 
   foreach(svg ${svgExport})
-    string(SUBSTRING ${svg} 10 4096 svg)
+    string(SUBSTRING ${svg} 0 4096 svg)
     STRING(REGEX REPLACE "," ";" svg "${svg}")
     list(GET svg 0 name)
     list(GET svg 3 width)
@@ -289,7 +304,7 @@ foreach(srcSvgFile ${GAFFER_SVG_FILES})
     add_custom_command(
             OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/graphics/${name}.png
             COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/graphics/
-            COMMAND inkscape  --export-png=${CMAKE_CURRENT_BINARY_DIR}/graphics/${name}.png --export-id=forExport:${name} --export-width=${width} --export-height=${height} --export-background-opacity=0 ${srcSvgFile}
+            COMMAND inkscape  --export-png=${CMAKE_CURRENT_BINARY_DIR}/graphics/${name}.png --export-id=${name} --export-width=${width} --export-height=${height} --export-background-opacity=0 ${srcSvgFile}
             DEPENDS ${srcSvgFile}
             WORKING_DIRECTORY ${GAFFER_SOURCE_DIR}
     )
