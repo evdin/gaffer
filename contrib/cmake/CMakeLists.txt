@@ -450,7 +450,7 @@ target_link_libraries( _GafferArnold ${BASE_LIBS} ${BASE_PYTHON_LIBS} GafferScen
 
 # GafferArnoldUI
 add_library( GafferArnoldUI SHARED ${GAFFERARNOLDUI_CXX_FILES} ${GAFFERARNOLDUI_H_FILES} )
-target_link_libraries( GafferArnoldUI ${BASE_LIBS} Gaffer GafferScene GafferSceneUI GafferOSL ${Cortex_IECOREGL_LIBRARY} )
+target_link_libraries( GafferArnoldUI ${BASE_LIBS} Gaffer GafferScene GafferSceneUI GafferOSL ${Cortex_IECOREGL_LIBRARY} ${CORTEX_ARNOLD_LIBS})
 
 # GafferArnoldUI Python Module
 add_library( _GafferArnoldUI MODULE ${GAFFERARNOLDUI_CXX_MODULE_FILES} )
