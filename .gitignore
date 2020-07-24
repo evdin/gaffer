@@ -15,4 +15,4 @@ config.log
 doc/html
 doc/python
 .build/
-contrib/cmake/CMakeLists.txt.user
+
