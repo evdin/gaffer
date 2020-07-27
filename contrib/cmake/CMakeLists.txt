@@ -172,7 +172,6 @@ set( GAFFER_LIB_NAMES
   GafferImage
   GafferImageUI
   GafferOSL
-  GafferOSLUI    #Naiqi's change
   GafferDelight
   GafferScene
   GafferSceneUI
@@ -412,13 +411,6 @@ target_link_libraries( GafferOSL ${BASE_LIBS} Gaffer GafferScene GafferImage ${O
 add_library( _GafferOSL MODULE ${GAFFEROSL_CXX_MODULE_FILES} )
 target_link_libraries( _GafferOSL ${BASE_LIBS} ${BASE_PYTHON_LIBS} GafferBindings GafferScene GafferImage GafferOSL GafferAppleseed ${Ilmbase_IEX_LIBRARY} )
 
-# GafferOSLUI   #Naiqi's change
-add_library( GafferOSLUI SHARED ${GAFFEROSLUI_CXX_FILES} ${GAFFEROSLUI_H_FILES} )
-target_link_libraries( GafferOSLUI ${BASE_LIBS} Gaffer GafferOSL GafferSceneUI ${OPENIMAGEIO_LIBRARIES} ${OSL_QUERY_LIBRARY} ${OSL_EXEC_LIBRARY} ${ILMBASE_IEX_LIBRARY} ${Cortex_IECORE_LIBRARY} )
-
-# GafferOSL Python Module #Naiqi's change
-add_library( _GafferOSLUI MODULE ${GAFFEROSLUI_CXX_MODULE_FILES} )
-target_link_libraries( _GafferOSLUI GafferOSLUI ${BASE_LIBS} ${BASE_PYTHON_LIBS} GafferBindings )
 
 # GafferVDB
 add_library( GafferVDB SHARED ${GAFFERVDB_CXX_FILES} ${GAFFERVDB_H_FILES} )
