@@ -67,10 +67,12 @@ class VariantVisualiser : public ObjectVisualiser
     {
     }
 
-    IECoreGL::ConstRenderablePtr visualise( const IECore::Object *object ) const override
+    Visualisations visualise( const IECore::Object *object ) const override
     {
-      return new GafferSceneUI::ProceduralRenderable(object);
+          IECoreGL::ConstRenderablePtr renderable = new GafferSceneUI::ProceduralRenderable(object);
+          return {Visualisation(renderable)};
     }
+
 };
 
 
