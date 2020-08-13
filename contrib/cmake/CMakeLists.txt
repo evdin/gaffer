@@ -618,8 +618,6 @@ foreach( GAFFER_LIB ${GAFFER_LIB_NAMES} )
   string( TOUPPER ${GAFFER_LIB} _GAFFER_LIB )
   install( TARGETS _${GAFFER_LIB}
            DESTINATION python/${GAFFER_LIB}/ )
-  message("This seems not working")
-  message( "_${GAFFER_LIB}")
 endforeach()
 
 # Install Bindings
