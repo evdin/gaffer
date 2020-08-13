@@ -277,7 +277,7 @@ file( READ  ${pyname} py_ids)
 
 STRING(REGEX REPLACE "'" "\"" py_ids "${py_ids}")
 
-STRING(REGEX MATCHALL "\"([a-zA-Z0-9]*)\"" py_ids ${py_ids})
+STRING(REGEX MATCHALL "\"([a-zA-Z0-9|-]*)\"" py_ids ${py_ids})
 STRING(REGEX REPLACE "\"" "" py_ids "${py_ids}")
 
 
